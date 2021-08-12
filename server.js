@@ -99,7 +99,7 @@ async function GetContractById(call, callback) {
     let finalResult = {
       providerName,
       providerPhone,
-      // avatar_base64,
+      avatar_base64,
       isMyFavotite,
       rate,
       rateByThisCustomer,
