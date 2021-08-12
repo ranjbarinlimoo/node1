@@ -1,19 +1,20 @@
-const db = require('../modules/stored_procedures/')
-const fs = require('fs');
+const db = require("../modules/stored_procedures/");
+const fs = require("fs");
 
 async function run() {
 
-    setTimeout(async () => {
+  setTimeout(async () => {
 
-        const username = 'testUser_backEnd_Ranjbar'
-        const data = await db.GetRatingsByCustomerUsername('moharrami',username)
-        console.log(data);
+    const username = "testUser_backEnd_Ranjbar";
+    const data = await db.GetRatingsByCustomerUsername("moharrami", username);
+    console.log(data);
 
 
-    },1000)
+  }, 1000);
 
 }
-run()
+
+run();
 
 // اسم سرویس دهنده - تلفنش - عکسش - اینکه جزو منتخب ها هست یا نه - میانگین امتیازش - و امتیازی این کاربر برای این متخصص ثبت کرده
 //
