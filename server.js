@@ -343,7 +343,7 @@ async function IsMyFavoriteByContractId(call, callback) {
 
 }
 
-
+//Non-GRPC method
 async function calculateAvgRate(serviceProviderUserName, currentRate, username) {
 
   const providerRates = await db.GetRatingsByServiceProvider(serviceProviderUserName, username);
