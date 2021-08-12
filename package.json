@@ -4,6 +4,7 @@
   "description": "Customer Panel",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "dev": "eslint  'modules/' --fix && kill-port 3000 && nodemon server.js",
     "production": "node server.js",
     "lint": "prettier --write \"{,!(node_modules)/**/}*.{js,jsx}\""

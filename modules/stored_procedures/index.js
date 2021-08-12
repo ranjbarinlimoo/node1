@@ -1,13 +1,15 @@
 const sql = require("mssql");
+const chalk = require("chalk");
+const env = require("dotenv").config();
 
 module.exports = new (class DB {
   constructor() {
     this.sqlConfig = {
-      user: "ranjbar",
-      password: "3DpPf3YGAb5QkaG",
-      database: "Limoo_Trial",
-      server: "185.128.82.62",
-      port: 11433,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_DATABASE,
+      server: process.env.DATABASE_URL,
+      port: parseInt(process.env.DATABASE_PORT),
       pool: {
         max: 10,
         min: 0,
@@ -18,7 +20,7 @@ module.exports = new (class DB {
         trustServerCertificate: true // change to true for local dev / self-signed certs
       }
     };
-    this.connect(this.sqlConfig).then(r => console.log("DB Connected"));
+    this.connect(this.sqlConfig).then(r => console.log(chalk.green.bold("Database Connected Successfully.")));
   }
 
   async connect(sqlConfig) {
