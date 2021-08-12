@@ -229,7 +229,7 @@ module.exports = new (class DB {
 
   async GetFileData(fileId,opr_username) {
     const data = await this.pool.request()
-        .input('fileId', sql.VarChar(32), fileId)
+        .input('fileId', sql.VarChar(64), fileId)
         .input('opr_username', sql.NVarChar(32), opr_username)
         .execute('GetFileData');
     return JSON.parse(JSON.stringify(data)).recordset[0]
@@ -259,6 +259,25 @@ module.exports = new (class DB {
       .input('description', sql.NVarChar(300), description)
       .input('opr_username', sql.NVarChar(32), opr_username)
       .execute('RegisterRate');
+    return JSON.parse(JSON.stringify(data)).recordset[0]
+  }
+
+  async GetRatingsByCustomerUsername(customer_username,opr_username) {
+    const data = await this.pool.request()
+      .input('customer_username', sql.NVarChar(32), customer_username)
+      .input('opr_username', sql.NVarChar(32), opr_username)
+      .execute('GetRatingsByCustomerUsername');
+    return JSON.parse(JSON.stringify(data)).recordset
+  }
+
+  async UpdateRate(rateId,rate,description,myFavorite,opr_username) {
+    const data = await this.pool.request()
+      .input('rateid', sql.NVarChar(32), rateId)
+      .input('myFavorite', sql.Bit, myFavorite)
+      .input('rate', sql.TinyInt, parseInt(rate))
+      .input('description', sql.NVarChar(300), description)
+      .input('opr_username', sql.NVarChar(32), opr_username)
+      .execute('UpdateRate');
     return JSON.parse(JSON.stringify(data)).recordset[0]
   }
 

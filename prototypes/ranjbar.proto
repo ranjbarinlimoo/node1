@@ -10,7 +10,8 @@ service CustomerPanel {
   rpc  GetContractById(Input) returns (Output) {}
   rpc  GetServiceProviderByContractId(Input) returns (Output) {}
   rpc  AddServiceProviderRateByContractId(Input) returns (Output) {}
-
+  rpc  EditMyFavoritesByContractId(Input) returns (Output) {}
+  rpc  IsMyFavoriteByContractId(Input) returns (Output) {}
 }
 
 //Parameters
