@@ -2,14 +2,14 @@ const grpc = require('@grpc/grpc-js')
 const loader = require('@grpc/proto-loader')
 
 
-const pkgDef = loader.loadSync('PATH/TO/PROTO_FILE',
+const pkgDef = loader.loadSync('prototypes/ranjbar.proto',
 //TODO Edit                                 /\this
     { keepCase: false, longs: String, enums: String, defaults: true, oneofs: true
     }
 )
 
 const pkg = grpc.loadPackageDefinition(pkgDef).Frontend
-const client = new pkg.CustomerPanel('GRPC_SERVER', grpc.credentials.createInsecure())
+const client = new pkg.CustomerPanel('localhost:8080', grpc.credentials.createInsecure())
 //TODO Edit                             /\this
 
 
@@ -21,7 +21,7 @@ client.GetUserContractsList({
     JSON: JSON.stringify({ UserName: 'moharrami' })},(err,res) => {
 
     const data = JSON.parse(res.JSON)
-    // console.log(data);
+    console.log(data);
 })
 
 
