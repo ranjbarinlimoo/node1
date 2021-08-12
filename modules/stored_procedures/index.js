@@ -281,4 +281,12 @@ module.exports = new (class DB {
     return JSON.parse(JSON.stringify(data)).recordset[0]
   }
 
+  async GetRatingsByServiceProvider(provider_username,opr_username) {
+    const data = await this.pool.request()
+      .input('provider_username', sql.NVarChar(32), provider_username)
+      .input('opr_username', sql.NVarChar(32), opr_username)
+      .execute('GetRatingsByServiceProvider');
+    return JSON.parse(JSON.stringify(data)).recordset
+  }
+
 })()

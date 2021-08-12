@@ -37,6 +37,9 @@ async function GetUserContractsList(call, callback) {
     const username = JSON.parse((call.request.JSON)).UserName;
     let result = await db.GetContractByCustomerUsername(username, username);
 
+    if (!result.length)
+      throw new Error("404");
+
     let finalResult = [];
     result.forEach((element) => {
 
@@ -51,13 +54,16 @@ async function GetUserContractsList(call, callback) {
 
     callback(null, {
       JSON: JSON.stringify({
-        data: finalResult,
+        list: finalResult,
         StatusCode: 200
       })
     });
 
   } catch (e) {
     switch (e.message) {
+      case "404" :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 404 }) });
+        break;
       case "400" :
         callback(null, { JSON: JSON.stringify({ StatusCode: 400 }) });
         break;
@@ -73,44 +79,63 @@ async function GetContractById(call, callback) {
     const username = "testUser_backEnd_Ranjbar";
     const Id = JSON.parse((call.request.JSON)).contractId;
     const contract = await db.GetContract(Id, username);
+
+    if (!contract)
+      throw new Error("404");
+
     const customer = await db.GetCustomer(contract.customer, username);
     const serviceProvider = await db.GetServiceProvider(contract.serviceProvider, username);
     const user_serviceProvider = await db.GetUser(contract.serviceProvider, username);
     const ratings = await db.GetRatingsByCustomerUsername(contract.customer, username);
 
-    const providerRate = ratings.filter((element)=> element.provider_username === contract.serviceProvider)
-    let rateByThisCustomer
-    if (!ratings.length){
+    const providerRate = ratings.filter((element) => element.provider_username === contract.serviceProvider);
+    let rateByThisCustomer;
+    if (!ratings.length) {
       rateByThisCustomer = null;
-    }else {
-      rateByThisCustomer = providerRate[0].rate
+    } else {
+      rateByThisCustomer = providerRate[0].rate;
     }
 
     const providerName = serviceProvider.fullname;
     const providerPhone = serviceProvider.tel;
     const avatar = await db.GetFileData(user_serviceProvider.avatarFileId, username);
-    const avatar_base64 = Buffer.from(avatar.data).toString("base64");
-    let isMyFavotite = false
+
+    let avatar_base64 = null;
+    if (avatar)
+      avatar_base64 = Buffer.from(avatar.data).toString("base64");
+
+
+    let isMyFavotite = false;
     if (providerRate.myFavorite)
-      isMyFavotite = true
+      isMyFavotite = true;
     const rate = serviceProvider.rate;
     const contractDetails = contract.description;
 
-    let finalResult = {
-      providerName,
-      providerPhone,
-      avatar_base64,
-      isMyFavotite,
-      rate,
-      rateByThisCustomer,
-      contractDetails,
-      StatusCode: 200
-    };
 
-    callback(null, { JSON: JSON.stringify({ data: finalResult }) });
+    callback(null, {
+      JSON: JSON.stringify({
+        providerName,
+        providerPhone,
+        avatar_base64,
+        isMyFavotite,
+        rate,
+        rateByThisCustomer,
+        contractDetails,
+        StatusCode: 200
+      })
+    });
 
   } catch (e) {
-    callback(null, { JSON: JSON.stringify({ StatusCode: 500 }) });
+    switch (e.message) {
+      case "404" :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 404 }) });
+        break;
+      case "400" :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 400 }) });
+        break;
+      default  :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 500 }) });
+    }
   }
 
 }
@@ -121,6 +146,10 @@ async function GetServiceProviderByContractId(call, callback) {
     const contractId = JSON.parse(call.request.JSON).contractId;
 
     const contract = await db.GetContract(contractId, username);
+
+    if (!contract)
+      throw new Error("404");
+
     const serviceProviderUserName = contract.serviceProvider;
     const user_serviceProvider = await db.GetUser(serviceProviderUserName, username);
 
@@ -129,7 +158,10 @@ async function GetServiceProviderByContractId(call, callback) {
     const serviceProviderRate = user_serviceProvider.rate;
 
     const avatar = await db.GetFileData(serviceProviderAvatarFileId, username);
-    const avatar_base64 = Buffer.from(avatar.data).toString("base64");
+
+    let avatar_base64 = null;
+    if (avatar)
+      avatar_base64 = Buffer.from(avatar.data).toString("base64");
 
 
     callback(null, {
@@ -143,11 +175,14 @@ async function GetServiceProviderByContractId(call, callback) {
 
   } catch (e) {
     switch (e.message) {
+      case "404" :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 404 }) });
+        break;
       case "400" :
         callback(null, { JSON: JSON.stringify({ StatusCode: 400 }) });
         break;
       default  :
-        callback(null, { JSON: JSON.stringify({ Status: 500 }) });
+        callback(null, { JSON: JSON.stringify({ StatusCode: 500 }) });
     }
   }
 }
@@ -166,6 +201,9 @@ async function AddServiceProviderRateByContractId(call, callback) {
     }
     let contract = await db.GetContract(contractId, username);
 
+    if (!contract)
+      throw new Error("404");
+
     const serviceProviderUserName = contract.serviceProvider;
     const customerUserName = contract.customer;
 
@@ -178,15 +216,25 @@ async function AddServiceProviderRateByContractId(call, callback) {
 
     });
     if (!check)
-      throw new Error("400");
+      throw new Error("405");
 
-    await db.RegisterRate(customerUserName, serviceProviderUserName, rate, description, username);
+    let newRate;
+    const avgRate = await calculateAvgRate(serviceProviderUserName, rate, username);
+    if (!avgRate)
+      newRate = rate;
+    else
+      newRate = avgRate;
+
+    await db.RegisterRate(customerUserName, serviceProviderUserName, newRate, description, username);
 
 
     callback(null, { JSON: JSON.stringify({ StatusCode: 201 }) });
 
   } catch (e) {
     switch (e.message) {
+      case "405" :
+        callback(null, { JSON: JSON.stringify({ StatusCode: 405 }) });
+        break;
       case "400" :
         callback(null, { JSON: JSON.stringify({ StatusCode: 400 }) });
         break;
@@ -203,22 +251,26 @@ async function EditMyFavoritesByContractId(call, callback) {
     const username = "testUser_backEnd_Ranjbar";
 
     const {
-      contractId,isMyFavorite
+      contractId,
+      isMyFavorite
     } = JSON.parse(call.request.JSON);
 
     let contract = await db.GetContract(contractId, username);
+
+    if (!contract)
+      throw new Error("404");
 
     const serviceProviderUserName = contract.serviceProvider;
     const customerUserName = contract.customer;
 
     let rating = await db.GetRatingsByCustomerUsername(customerUserName, username);
-    if (!rating.length){
-      await db.RegisterRate(customerUserName, serviceProviderUserName, 0, '', username);
+    if (!rating.length) {
+      await db.RegisterRate(customerUserName, serviceProviderUserName, 0, "", username);
       rating = await db.GetRatingsByCustomerUsername(customerUserName, username);
     }
-    rating = rating[0]
+    rating = rating[0];
 
-    await db.UpdateRate(rating.rateid,rating.rate,rating.description,isMyFavorite,username)
+    await db.UpdateRate(rating.rateid, rating.rate, rating.description, isMyFavorite, username);
 
     callback(null, { JSON: JSON.stringify({ StatusCode: 200 }) });
 
@@ -247,27 +299,33 @@ async function IsMyFavoriteByContractId(call, callback) {
     } = JSON.parse(call.request.JSON);
 
     let contract = await db.GetContract(contractId, username);
+    if (!contract)
+      throw new Error("404");
 
     const serviceProviderUserName = contract.serviceProvider;
     const customerUserName = contract.customer;
 
     let rating = await db.GetRatingsByCustomerUsername(customerUserName, username);
-    if (!rating.length){
-      await db.RegisterRate(customerUserName, serviceProviderUserName, 0, '', username);
+    if (!rating.length) {
+      await db.RegisterRate(customerUserName, serviceProviderUserName, 0, "", username);
       rating = await db.GetRatingsByCustomerUsername(customerUserName, username);
     }
-    rating = rating[0]
+    rating = rating[0];
 
-    let isMyFavorite
-    if(rating.myFavorite){
-      isMyFavorite=true
-    }else {
-      isMyFavorite=false
+    let isMyFavorite;
+    if (rating.myFavorite) {
+      isMyFavorite = true;
+    } else {
+      isMyFavorite = false;
     }
 
 
-
-    callback(null, { JSON: JSON.stringify({ isMyFavorite,StatusCode: 200 }) });
+    callback(null, {
+      JSON: JSON.stringify({
+        isMyFavorite,
+        StatusCode: 200
+      })
+    });
 
   } catch (e) {
     switch (e.message) {
@@ -283,4 +341,21 @@ async function IsMyFavoriteByContractId(call, callback) {
   }
 
 
+}
+
+
+async function calculateAvgRate(serviceProviderUserName, currentRate, username) {
+
+  const providerRates = await db.GetRatingsByServiceProvider(serviceProviderUserName, username);
+  if (!providerRates.length)
+    return null;
+  let sum = 0;
+  providerRates.forEach((element) => {
+
+    sum += element.rate;
+
+  });
+
+  sum += currentRate;
+  return Math.round(sum / (providerRates.length + 1));
 }
