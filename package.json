@@ -1,0 +1,29 @@
+{
+  "name": "customer_panel",
+  "version": "1.0.0",
+  "description": "Customer Panel",
+  "main": "server.js",
+  "scripts": {
+    "dev": "eslint  'modules/' --fix && kill-port 3000 && nodemon server.js",
+    "production": "node server.js",
+    "lint": "prettier --write \"{,!(node_modules)/**/}*.{js,jsx}\""
+  },
+  "author": "Milad Karimi & MohammadReza Ranjbar",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.3.7",
+    "@grpc/proto-loader": "^0.6.4",
+    "chalk": "^4.1.2",
+    "dotenv": "^8.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^7.2.0",
+    "nodemon": "^2.0.11"
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "kill-port": "^1.6.1",
+    "prettier": "2.2.1"
+  }
+}

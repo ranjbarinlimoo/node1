@@ -1,0 +1,51 @@
+before_script:
+  - npm i pm2 -g
+  - pwd
+  - pm2 del all 
+
+stages:
+  - deploy
+
+build stage:
+  stage: deploy
+  script:
+    - cp -raf $(pwd)/. /opt/limoo-auth-api/
+    - cd /opt/limoo-auth-api
+    # - git checkout -f origin/master
+    - cp ../.env ./
+    - cp ../server.js ./
+    - npm i
+  when: manual
+  # only:
+  #   - devops
+  tags:
+    - app
+    - backend
+    - stage
+    - vm
+  environment:
+    name: production
+
+build prod:
+  stage: deploy
+  script:
+    - cp -raf $(pwd)/. /opt/limoo-auth-api/
+    - cd /opt/limoo-auth-api
+    # - git checkout -f origin/master
+    - cp ../.env ./
+    - cp ../server.js ./
+    - npm i
+  when: manual
+  only:
+    - master
+  tags:
+    - app
+    - backend
+    - prod
+    - vm
+  environment:
+    name: production
+
+after_script:
+  - cd /opt/limoo-auth-api
+  - pm2 start
