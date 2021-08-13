@@ -38,5 +38,6 @@ EditMyFavoritesByContractId(JSON) returns (JSON)
 
 IsMyFavoriteByContractId(JSON) returns (JSON)
 
+
 ```
 
