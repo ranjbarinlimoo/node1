@@ -27,42 +27,6 @@ module.exports = new (class DB {
     if (!this.pool) this.pool = await sql.connect(sqlConfig);
   }
 
-  async RegisterSession(username, ip) {
-    const data = await this.pool.request()
-      .input("username", sql.NVarChar(32), username)
-      .input("ip", sql.VarBinary(16), Buffer.from(ip))
-      .execute("RegisterSession");
-    return JSON.parse(JSON.stringify(data)).recordset[0];
-  }
-
-  // async GetSession(id, opr_username) {
-  //   const data = await this.pool.request()
-  //       .input('id', sql.BigInt, id)
-  //       .input('opr_username', sql.NVarChar(32), opr_username)
-  //       .execute('GetSession');
-  // return JSON.parse(JSON.stringify(data)).recordset[0]
-  // }
-
-  //Returns @sessionID (BigInt)
-  // async GetUserSession(id, username) {
-  //   const data = await this.pool.request()
-  //       .input('username', sql.NVarChar(32), username)
-  //       .execute('GetUserSession');
-  // return JSON.parse(JSON.stringify(data)).recordset[0]
-  // }
-
-  // async UpdateSession(id, username,ip,start,end,status,opr_username) {
-  //   const data = await this.pool.request()
-  //       .input('id', sql.BigInt, id)
-  //       .input('username', sql.NVarChar(32), username)
-  //       .input('ip', sql.VarBinary(16), Buffer.from(ip))
-  //       .input('start', sql.Int, start)
-  //       .input('end', sql.Int, end)
-  //       .input('status', sql.VarChar(255), status)
-  //       .input('opr_username', sql.NVarChar(32), opr_username)
-  //       .execute('UpdateSession');
-  // return JSON.parse(JSON.stringify(data)).recordset[0]
-  // }
 
   async RegisterUser(username, status, regDateTime, lastUpdate, role, isDeleted, opr_username) {
     const data = await this.pool.request()
