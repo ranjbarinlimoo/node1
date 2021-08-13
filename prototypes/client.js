@@ -53,7 +53,7 @@ client.EditMyFavoritesByContractId({
     JSON: JSON.stringify({ contractId: '1' , isMyFavorite: true})},(err,res) => {
 
     const data = JSON.parse(res.JSON)
-    // console.log(data);
+    // console.log(data)
 })
 
 
@@ -61,5 +61,5 @@ client.IsMyFavoriteByContractId({
     JSON: JSON.stringify({ contractId: '1' })},(err,res) => {
 
     const data = JSON.parse(res.JSON)
-    // console.log(data);
+    // console.log(data)
 })

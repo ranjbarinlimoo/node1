@@ -3,7 +3,7 @@ syntax = "proto3";
 package Frontend;
 
 
-//Service
+//Services
 service CustomerPanel {
 
   rpc  GetUserContractsList(Input) returns (Output) {}
