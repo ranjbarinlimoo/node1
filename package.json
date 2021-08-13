@@ -5,10 +5,7 @@
   "main": "server.js",
   "scripts": {
     "client": "node prototypes/client.js",
-    "server": "node server.js",
-    "dev": "eslint  'modules/' --fix && kill-port 3000 && nodemon server.js",
-    "production": "node server.js",
-    "lint": "prettier --write \"{,!(node_modules)/**/}*.{js,jsx}\""
+    "server": "node server.js"
   },
   "author": "Milad Karimi & MohammadReza Ranjbar",
   "license": "ISC",
@@ -22,10 +19,5 @@
     "nodemon": "^2.0.11"
   },
   "devDependencies": {
-    "eslint": "^7.14.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "kill-port": "^1.6.1",
-    "prettier": "2.2.1"
   }
 }
