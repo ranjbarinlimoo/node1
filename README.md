@@ -21,3 +21,22 @@ npm run server
 npm run client
 
 ```
+
+## APIs
+
+```bash
+
+GetUserContractsList(JSON) returns (JSON)
+
+GetContractById(JSON) returns (JSON)
+
+GetServiceProviderByContractId(JSON) returns (JSON)
+
+AddServiceProviderRateByContractId(JSON) returns (JSON)
+
+EditMyFavoritesByContractId(JSON) returns (JSON)
+
+IsMyFavoriteByContractId(JSON) returns (JSON)
+
+```
+
