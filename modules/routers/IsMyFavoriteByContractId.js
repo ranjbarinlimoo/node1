@@ -39,7 +39,8 @@ module.exports =router.get("/IsMyFavoriteByContractId", middleware, async (req, 
         isMyFavorite
 
       },
-      message: "OK"
+      message: "OK",
+      status: 200
     });
 
   } catch (e) {
@@ -47,20 +48,23 @@ module.exports =router.get("/IsMyFavoriteByContractId", middleware, async (req, 
       case "404" :
         res.status(404).send({
           result: null,
-          message: "Contract Not Found!"
+          message: "Contract Not Found!",
+          status: 404
         });
         break;
       case "400" :
         res.status(400).send({
           result: null,
-          message: "Bad Input!"
+          message: "Bad Input!",
+          status: 400
         });
         break;
       default  :
         res.status(500).send({
           result: null,
           message: "Internal Server Or Database Error!",
-          devMessage: e.message
+          devMessage: e.message,
+          status: 500
         });
     }
   }
