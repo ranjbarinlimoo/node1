@@ -4,7 +4,7 @@
   "description": "Customer Panel",
   "main": "server.js",
   "scripts": {
-    "start": "node expressServer.js",
+    "start": "node expressServer.js"
   },
   "author": "Milad Karimi & MohammadReza Ranjbar",
   "license": "ISC",
