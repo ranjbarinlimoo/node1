@@ -1,65 +1,38 @@
-const grpc = require('@grpc/grpc-js')
-const loader = require('@grpc/proto-loader')
+const grpc = require("@grpc/grpc-js");
+const loader = require("@grpc/proto-loader");
+const chalk = require("chalk");
+const env = require("dotenv").config();
+const path = require('path')
+
+module.exports = new (class Client {
+
+  constructor() {
+
+    const pkgDef = loader.loadSync(path.join(__dirname,'./ranjbar.proto'),
+      {
+        keepCase: false,
+        longs: String,
+        enums: String,
+        defaults: true,
+        oneofs: true
+      }
+    );
+
+    const pkg = grpc.loadPackageDefinition(pkgDef).Frontend;
+    this.client = new pkg.CustomerPanel(`${process.env.GRPC_SERVER_HOST}:${process.env.GRPC_SERVER_PORT}`, grpc.credentials.createInsecure());
+
+    console.log(chalk.yellow.bold('GRPC Client Is Running!!'));
+  }
 
 
-const pkgDef = loader.loadSync('prototypes/ranjbar.proto',
-//TODO Edit                                 /\this
-    { keepCase: false, longs: String, enums: String, defaults: true, oneofs: true
-    }
-)
 
-const pkg = grpc.loadPackageDefinition(pkgDef).Frontend
-const client = new pkg.CustomerPanel('localhost:8080', grpc.credentials.createInsecure())
-//TODO Edit                             /\this
+  async getToken() {
+    await this.client.GetUserContractsList({
+      JSON: JSON.stringify({ UserName: "moharrami" })
+    }, (err, res) => {
 
+      return JSON.parse(res);
+    });
+  }
+});
 
-
-//APIs With Examples
-//                    Uncomment log codes for see the results in object format.
-
-client.GetUserContractsList({
-    JSON: JSON.stringify({ UserName: 'moharrami' })},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    console.log(data);
-})
-
-
-client.GetContractById({
-    JSON: JSON.stringify({ contractId: '1' })},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    // console.log(data);
-})
-
-
-client.GetServiceProviderByContractId({
-    JSON: JSON.stringify({ contractId: '1' })},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    // console.log(data);
-})
-
-
-client.AddServiceProviderRateByContractId({
-    JSON: JSON.stringify({ contractId: '1' , rate: 2 , description: 'A lazy person.' })},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    // console.log(data);
-})
-
-
-client.EditMyFavoritesByContractId({
-    JSON: JSON.stringify({ contractId: '1' , isMyFavorite: true})},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    // console.log(data)
-})
-
-
-client.IsMyFavoriteByContractId({
-    JSON: JSON.stringify({ contractId: '1' })},(err,res) => {
-
-    const data = JSON.parse(res.JSON)
-    // console.log(data)
-})

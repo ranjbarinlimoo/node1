@@ -18,7 +18,7 @@ const pkg = grpc.loadPackageDefinition(packageDefinition).Frontend;
 async function startGrpcServer() {
   let server = new grpc.Server();
   server.addService(pkg.CustomerPanel.service, Services );
-  server.bindAsync(process.env.GRPS_SERVER_HOST + ":" + process.env.GRPS_SERVER_PORT, grpc.ServerCredentials.createInsecure(), () => {
+  server.bindAsync(`${process.env.GRPS_SERVER_HOST}:${process.env.GRPS_SERVER_PORT}`, grpc.ServerCredentials.createInsecure(), () => {
     server.start();
     console.log(chalk.blue.bold(`GRPC Server Is Running On Port: ${process.env.GRPS_SERVER_PORT}`));
   });

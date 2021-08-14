@@ -12,6 +12,7 @@ service CustomerPanel {
   rpc  AddServiceProviderRateByContractId(Input) returns (Output) {}
   rpc  EditMyFavoritesByContractId(Input) returns (Output) {}
   rpc  IsMyFavoriteByContractId(Input) returns (Output) {}
+
 }
 
 //Parameters

@@ -1,17 +1,46 @@
-const db = require("../modules/stored_procedures/");
-const fs = require("fs");
-
-async function run() {
-
-  setTimeout(async () => {
-
-    const username = "testUser_backEnd_Ranjbar";
-    const data = await db.GetRatingsByCustomerUsername("moharrami", username);
-    console.log(data);
 
 
-  }, 1000);
 
-}
+// var request = require('request');
+// var options = {
+//   'method': 'GET',
+//   'url': 'https://testnodejsappp.herokuapp.com/GetUserContractsList',
+//   'headers': {
+//     'Content-Type': 'application/json'
+//   },
+//   body: JSON.stringify({
+//     "parameters": {
+//       "UserName": "moharrami"
+//     }
+//   })
+//
+// };
+// request(options, function (error, response) {
+//   if (error) throw new Error(error);
+//   console.log(JSON.parse(response.body));
+// });
 
-run();
+// var axios = require('axios');
+// var data = JSON.stringify({
+//   "parameters": {
+//     "UserName": "moharrami"
+//   }
+// });
+//
+// var config = {
+//   method: 'get',
+//   url: 'https://testnodejsappp.herokuapp.com/GetUserContractsList',
+//   headers: {
+//     'Content-Type': 'application/json'
+//   },
+//   data : data
+// };
+//
+// axios(config)
+//   .then(function (response) {
+//     console.log(response.data);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
+

@@ -14,6 +14,19 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, x-access-token, Accept, Authorization");
   next();
 });
+app.get('/test',(req,res)=>{
+
+  console.log('//test');
+  console.log('req.body');
+  console.log(req.body);
+  console.log('req.query');
+  console.log(req.query);
+  console.log('req.params');
+  console.log(req.params);
+  res.status(200).send({body:req.body,query:req.query,params:req.params});
+
+
+})
 
 
 app.listen(process.env.PORT, (err) => {
