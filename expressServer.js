@@ -2,10 +2,12 @@ const express = require("express");
 const env = require("dotenv").config();
 const chalk = require("chalk");
 const routers = require("./modules/routers");
+const bodyParser = require("body-parser");
 
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(routers);
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
