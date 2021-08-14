@@ -45,7 +45,7 @@ module.exports = new (class DB {
     const data = await this.pool.request()
       .input("username", sql.NVarChar(32), username)
       .input("opr_username", sql.NVarChar(32), opr_username)
-      .execute("GetUser");
+      .execute("GetUser1");
     return JSON.parse(JSON.stringify(data)).recordset[0];
   }
 

@@ -26,7 +26,7 @@ module.exports =router.get("/GetServiceProviderByContractId", middleware, async 
 
     let avatar_base64 = null;
     if (avatar)
-      avatar_base64 = await Buffer.from(avatar.data).toString("base64");
+      avatar_base64 = Buffer.from(avatar.data).toString("base64");
 
     res.send({
       result: {

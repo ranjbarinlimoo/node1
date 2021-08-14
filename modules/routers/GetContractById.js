@@ -30,6 +30,7 @@ module.exports =router.get("/GetContractById", middleware, async (req, res) => {
     const providerPhone = serviceProvider.tel;
     const avatar = await db.GetFileData(user_serviceProvider.avatarFileId, req.username);
 
+    console.log(user_serviceProvider);
     let avatar_base64 = null;
     if (avatar)
       avatar_base64 = Buffer.from(avatar.data).toString("base64");
