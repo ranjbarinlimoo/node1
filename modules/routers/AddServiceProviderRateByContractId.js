@@ -24,16 +24,24 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
     const serviceProviderUserName = contract.serviceProvider;
     const customerUserName = contract.customer;
 
-    const data = await db.GetRatingsByCustomerUsername(customerUserName, req.username);
+    let ratings = await db.GetRatingsByCustomerUsername(customerUserName, req.username);
 
-    const check = data.every((element) => {
+    const check = ratings.every((element) => {
 
       return element.provider_username !== serviceProviderUserName;
 
 
     });
-    if (!check)
-      throw new Error("405");
+    if (!check){
+      ratings = ratings.filter((element) => element.provider_username === serviceProviderUserName)
+      let rating = ratings[0]
+      await db.UpdateRate(rating.rateid, rate, description, rating.myFavorite, req.username)
+
+      return res.status(200).send({
+        result: {},
+        message: "Edited!"
+      });
+    }
 
     let newRate;
     const avgRate = await calculateAvgRate(serviceProviderUserName, rate, req.username);

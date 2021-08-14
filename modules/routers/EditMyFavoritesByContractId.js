@@ -21,12 +21,13 @@ module.exports =router.patch("/EditMyFavoritesByContractId", middleware, async (
     const customerUserName = contract.customer;
 
     let rating = await db.GetRatingsByCustomerUsername(customerUserName, req.username);
+    rating = rating.filter((element)=> element.provider_username === serviceProviderUserName)
     if (!rating.length) {
       await db.RegisterRate(customerUserName, serviceProviderUserName, 0, "", req.username);
       rating = await db.GetRatingsByCustomerUsername(customerUserName, req.username);
     }
-    rating = rating[0];
-
+    rating = rating.filter((element)=> element.provider_username === serviceProviderUserName)
+    rating = rating[0]
     await db.UpdateRate(rating.rateid, rating.rate, rating.description, isMyFavorite, req.username);
 
     res.send({ message: "OK" });
