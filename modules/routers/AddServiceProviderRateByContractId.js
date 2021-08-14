@@ -36,7 +36,7 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
       throw new Error("405");
 
     let newRate;
-    const avgRate = await calculateAvgRate(serviceProviderUserName, rate, username);
+    const avgRate = await calculateAvgRate(serviceProviderUserName, rate, req.username);
     if (!avgRate)
       newRate = rate;
     else
