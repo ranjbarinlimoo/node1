@@ -5,8 +5,6 @@
   "main": "server.js",
   "scripts": {
     "start": "node expressServer.js",
-    "client": "node prototypes/client.js",
-    "server": "node expressServer.js"
   },
   "author": "Milad Karimi & MohammadReza Ranjbar",
   "license": "ISC",
