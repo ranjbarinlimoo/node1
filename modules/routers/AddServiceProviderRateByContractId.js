@@ -13,7 +13,7 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
       description
     } = req.body.parameters;
 
-    if (rate > 5 && rate < 0) {
+    if (rate > 5 || rate < 0) {
       throw new Error("400");
     }
     let contract = await db.GetContract(contractId, req.username);
@@ -28,15 +28,15 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
 
     const check = data.every((element) => {
 
-      if (element.provider_username === serviceProviderUserName)
-        return false;
+      return element.provider_username !== serviceProviderUserName;
+
 
     });
     if (!check)
       throw new Error("405");
 
     let newRate;
-    const avgRate = await calculateAvgRate(serviceProviderUserName, rate, username);
+    const avgRate = await calculateAvgRate(serviceProviderUserName, rate, req.username);
     if (!avgRate)
       newRate = rate;
     else
