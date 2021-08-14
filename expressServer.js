@@ -8,13 +8,13 @@ const app = express();
 app.use(express.json());
 app.use(routers);
 
-app.listen(process.env.PORT, (err) => {
+app.listen(process.env.EXPRESS_SERVER_PORT, (err) => {
 
   if (err)
     return console.log(chalk.bgRedBright.bold("An Error Occurred!"));
 
-  console.log(chalk.blue.bold("Express Server Listening On Port: " + process.env.PORT));
-});
+  console.log(chalk.blue.bold("Express Server Listening On Port: " + 8081));
+})
 
 
 
