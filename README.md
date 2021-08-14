@@ -16,8 +16,6 @@ npm i
 # Run server
 npm run server
 
-# Run client
-npm run client
 ```
 
 ## APIs
