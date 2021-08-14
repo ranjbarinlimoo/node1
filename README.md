@@ -14,7 +14,7 @@ npm i
 
 ```bash
 # Run server
-npm run server
+npm start
 
 ```
 
