@@ -14,7 +14,7 @@ app.listen(process.env.EXPRESS_SERVER_PORT, (err) => {
     return console.log(chalk.bgRedBright.bold("An Error Occurred!"));
 
   console.log(chalk.blue.bold("Express Server Listening On Port: " + 8081));
-});
+})
 
 
 
