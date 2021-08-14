@@ -10,7 +10,7 @@ app.use(routers);
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE,PATCH, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, x-access-token, Accept, Authorization");
   next();
 });
