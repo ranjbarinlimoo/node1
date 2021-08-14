@@ -25,7 +25,8 @@ module.exports = router.get("/GetUserContractsList", middleware, async (req, res
 
     res.send({
       result: finalResult,
-      message: "OK"
+      message: "OK",
+      status: 200
     });
 
 
@@ -34,20 +35,23 @@ module.exports = router.get("/GetUserContractsList", middleware, async (req, res
       case "404" :
         res.status(404).send({
           result: null,
-          message: "Username Not Found!"
+          message: "Username Not Found!",
+          status: 404
         });
         break;
       case "400" :
         res.status(400).send({
           result: null,
-          message: "Bad Input!"
+          message: "Bad Input!",
+          status: 400
         });
         break;
       default  :
         res.status(500).send({
           result: null,
           message: "Internal Server Or Database Error!",
-          devMessage: e.message
+          devMessage: e.message,
+          status: 500
         });
     }
   }

@@ -1,5 +1,5 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const db = require("../stored_procedures/");
 const middleware = require("../middleWares/token");
 
@@ -32,29 +32,36 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
 
 
     });
-    if (!check){
-      ratings = ratings.filter((element) => element.provider_username === serviceProviderUserName)
-      let rating = ratings[0]
-      await db.UpdateRate(rating.rateid, rate, description, rating.myFavorite, req.username)
-
-      return res.status(200).send({
-        result: {},
-        message: "Edited!"
-      });
-    }
 
     let newRate;
     const avgRate = await calculateAvgRate(serviceProviderUserName, rate, req.username);
-    if (!avgRate)
+    if (!avgRate) {
       newRate = rate;
-    else
+    } else
       newRate = avgRate;
+
+
+    if (!check){
+
+
+      ratings = ratings.filter((element) => element.provider_username === serviceProviderUserName);
+      let rating = ratings[0];
+
+      await db.UpdateRate(rating.rateid, newRate, description, rating.myFavorite, req.username);
+      return res.status(200).send({
+        result: {},
+        message: "Edited!",
+        status: 200
+      });
+
+    }
 
     await db.RegisterRate(customerUserName, serviceProviderUserName, newRate, description, req.username);
 
     res.status(201).send({
       result: {},
-      message: "Added!"
+      message: "Added!",
+      status: 201
     });
 
   } catch (e) {
@@ -62,28 +69,24 @@ module.exports =router.post("/AddServiceProviderRateByContractId", middleware, a
       case "404" :
         res.status(404).send({
           result: null,
-          message: "Contract Not Found!"
-        });
-        break;
-
-      case "405" :
-        res.status(400).send({
-          result: null,
-          message: "Already Rated This Provider!"
+          message: "Contract Not Found!",
+          status: 404
         });
         break;
 
       case "400" :
         res.status(400).send({
           result: null,
-          message: "Bad Input!"
+          message: "Bad Input!",
+          status: 400
         });
         break;
       default  :
         res.status(500).send({
           result: null,
           message: "Internal Server Or Database Error!",
-          devMessage: e.message
+          devMessage: e.message,
+          status: 500
         });
     }
   }
